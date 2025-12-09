@@ -24,25 +24,30 @@ useSeoMeta({
   twitterCard: 'summary_large_image'
 })
 
-// Check if user is authenticated
-const route = useRoute()
-const isAuthenticated = computed(() => route.path === '/' || route.path === '/index')
-const showHeader = computed(() => route.path !== '/landing' && route.path !== '/login' && route.path !== '/register')
+// Use auth composable
+const { isAuthenticated, logout: authLogout, checkAuth } = useAuth()
+
+// Check auth on mount
+onMounted(() => {
+  checkAuth()
+})
 
 const logout = () => {
-  // TODO: Implement actual logout logic
-  navigateTo('/landing')
+  authLogout()
+  navigateTo('/login')
 }
 </script>
 
 <template>
   <UApp>
-        <!-- Header/Nav -->
+    <!-- Header/Nav - Always Show -->
     <div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm max-w-7xl mx-auto px-20 pt-4 pb-4 border-b border-gray-200">
       <div class="flex justify-between items-center">
-        <h1 class="text-[1.7rem] font-bold italic" style="font-family: 'Poppins', sans-serif; color: #000;">
-          biarInget
-        </h1>
+        <NuxtLink to="/">
+          <h1 class="text-[1.7rem] font-bold italic cursor-pointer hover:opacity-80 transition-opacity" style="font-family: 'Poppins', sans-serif; color: #000;">
+            biarInget
+          </h1>
+        </NuxtLink>
         <div class="flex items-center gap-6">
           <template v-if="isAuthenticated">
             <button @click="logout" class="px-6 py-2 text-[0.86rem] font-semibold rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors"
@@ -71,12 +76,11 @@ const logout = () => {
       </div>
     </div>
 
-
     <UMain>
       <NuxtPage />
     </UMain>
 
-    <UFooter >
+    <UFooter>
       <template #left>
         <p class="text-sm text-muted">
           3SK • © {{ new Date().getFullYear() }}
