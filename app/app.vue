@@ -34,7 +34,7 @@ onMounted(() => {
 
 const logout = () => {
   authLogout()
-  navigateTo('/login')
+  navigateTo('/')
 }
 </script>
 
