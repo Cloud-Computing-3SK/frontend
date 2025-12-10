@@ -34,12 +34,12 @@
         </div>
         <div class="flex gap-3 mt-4">
           <UButton block size="lg" type="submit" :disabled="!editForm.title || !editForm.deadline"
-            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm"
+            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm hover:bg-[#333]"
             style="font-family: 'Poppins', sans-serif; background:#222; color:white;">
             Update
           </UButton>
           <UButton block size="lg" type="button" @click="isEditModalOpen = false"
-            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm border-2 hover:bg-[#333] border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             style="font-family: 'Poppins', sans-serif;">
             Cancel
           </UButton>
@@ -78,7 +78,7 @@
     <div class="max-w-7xl mx-auto px-20 pt-8 mx-12">
       <div class="grid grid-cols-1 md:grid-cols-2 items-center ">
         <div>
-          <span class="text-[2.5rem] font-bold italic" style="font-family: 'Poppins', sans-serif; color: #000;">My Task</span>
+          <span class="text-[2.5rem] font-bold italic" style="font-family: 'Poppins', sans-serif; color: #000;">[Organization Name]'s Task</span>
         </div>
         <div class="flex items-center justify-end mt-4 md:mt-0 gap-2">
           <label class="text-[1rem] font-medium" style="font-family: 'Poppins', sans-serif;">Sort by date:</label>
