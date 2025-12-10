@@ -4,51 +4,45 @@
     @click.self="isEditModalOpen = false">
     <div class="bg-white rounded-[30px] shadow-[0_8px_8px_0_rgba(0,0,0,0.25)] px-10 py-8 mx-4"
       style="max-width:500px; width:100%;">
-      <h2 class="text-[2rem] font-bold italic mb-4" style="font-family: 'Poppins', sans-serif; color: #000;">Edit Task
-      </h2>
+      <h2 class="text-[2rem] font-bold italic mb-4" style="font-family: 'Poppins', sans-serif; color: #000;">Edit Task</h2>
       <form @submit.prevent="updateTask" class="flex flex-col gap-3">
         <div class="flex flex-col gap-2">
-          <label class="text-[1rem] font-normal text-black" style="font-family: 'Poppins', sans-serif;">Title</label>
-          <input v-model="editForm.title" placeholder="Title" type="text"
-            class="rounded-xl text-[1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none bg-[#F7F7F7] px-4 py-3"
+          <label class="text-[1rem] font-base text-black" style="font-family: 'Poppins', sans-serif;">Title</label>
+          <UInput v-model="editForm.title" placeholder="Title" size="lg"
+            class="rounded-xl text-[1.1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none"
             style="font-family: 'Poppins', sans-serif;" />
         </div>
         <div class="flex flex-col gap-2">
-          <label class="text-[1rem] font-normal text-black" style="font-family: 'Poppins', sans-serif;">Notes</label>
-          <textarea v-model="editForm.notes" placeholder="Notes" rows="3"
-            class="text-[1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none bg-[#F7F7F7] rounded-xl px-4 py-3"
-            style="font-family: 'Poppins', sans-serif;"></textarea>
+          <label class="text-[1rem] font-base text-black" style="font-family: 'Poppins', sans-serif;">Notes</label>
+          <UTextarea v-model="editForm.notes" placeholder="Notes" :rows="3"
+            class="text-[1.1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none"
+            style="font-family: 'Poppins', sans-serif;" />
         </div>
         <div class="flex gap-4">
-          <div class="flex flex-col gap-2 flex-1">
-            <label class="text-[1rem] font-normal text-black" style="font-family: 'Poppins', sans-serif;">Due
-              Date</label>
-            <input v-model="editForm.deadline" type="date"
-              class="text-[1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none bg-[#F7F7F7] rounded-xl px-4 py-3"
+          <div class="flex flex-col gap-2 w-1/2">
+            <label class="text-[1rem] font-base text-black" style="font-family: 'Poppins', sans-serif;">Due Date</label>
+            <UInput v-model="editForm.deadline" type="date"
+              class="text-[1.1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none"
               style="font-family: 'Poppins', sans-serif;" />
           </div>
-          <div class="flex flex-col gap-2 flex-1">
-            <label class="text-[1rem] font-normal text-black" style="font-family: 'Poppins', sans-serif;">Status</label>
-            <select v-model="editForm.status"
-              class="rounded-xl text-[1rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none bg-[#F7F7F7] px-4 py-3"
-              style="font-family: 'Poppins', sans-serif;">
-              <option v-for="status in statusOptions" :key="status.value" :value="status.value">
-                {{ status.label }}
-              </option>
-            </select>
+          <div class="flex flex-col gap-2 w-1/2">
+            <label class="text-[1rem] font-base text-black" style="font-family: 'Poppins', sans-serif;">Status</label>
+            <USelect v-model="editForm.status" :items="statusOptions" option-attribute="label" value-attribute="value"
+              class="rounded-l text-[0.85rem] font-medium border-none focus:ring-2 focus:ring-[#222] focus:outline-none"
+              style="font-family: 'Poppins', sans-serif;" />
           </div>
         </div>
         <div class="flex gap-3 mt-4">
-          <button type="submit" :disabled="!editForm.title || !editForm.deadline"
-            class="flex-1 text-[1rem] font-semibold rounded-xl shadow-sm py-3 bg-[#222] text-white disabled:opacity-50 disabled:cursor-not-allowed"
-            style="font-family: 'Poppins', sans-serif;">
+          <UButton block size="lg" type="submit" :disabled="!editForm.title || !editForm.deadline"
+            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm"
+            style="font-family: 'Poppins', sans-serif; background:#222; color:white;">
             Update
-          </button>
-          <button type="button" @click="isEditModalOpen = false"
-            class="flex-1 text-[1rem] font-semibold rounded-xl shadow-sm py-3 border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
+          </UButton>
+          <UButton block size="lg" type="button" @click="isEditModalOpen = false"
+            class="flex-1 text-[1.1rem] font-base rounded-xl shadow-sm border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50"
             style="font-family: 'Poppins', sans-serif;">
             Cancel
-          </button>
+          </UButton>
         </div>
       </form>
     </div>
