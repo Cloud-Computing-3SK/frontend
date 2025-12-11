@@ -1,10 +1,10 @@
 import { READ } from "./endpoint"
-import type { NotesRequest, NotesResponse } from "~/types/notes"
+import type { ReadNotesResponse } from "~/types/notes"
 
 export const useCreateNotes = () => {
   const config = useRuntimeConfig()
 
-  const createNotes = async (data: NotesRequest): Promise<NotesResponse[]> => {
+  const createNotes = async (): Promise<ReadNotesResponse> => {
     const fullUrl = `${config.public.apiBase}${READ}`
 
     const response = await fetch(fullUrl, {
@@ -16,7 +16,12 @@ export const useCreateNotes = () => {
     })
 
     if (!response.ok) {
-      throw new Error("Failed to createNotes")
+      const errorData = await response.json()
+      // Check for "not part of any organization" error
+      if (errorData.error && errorData.error.includes("not part of any organization")) {
+        throw new Error("NO_ORGANIZATION")
+      }
+      throw new Error(errorData.error || errorData.message || "Failed to fetch notes")
     }
 
     return await response.json()

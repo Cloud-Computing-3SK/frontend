@@ -1,0 +1,1 @@
+export const USER_SEARCH = (username: string) => `/auth/users/search/?username=${username}`

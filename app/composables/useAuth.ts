@@ -6,10 +6,12 @@ export const useAuth = () => {
     return false
   })
 
-  const login = (accessToken: string, refreshToken: string) => {
+  const login = (accessToken: string, refreshToken: string, username?: string, email?: string) => {
     if (import.meta.client) {
       localStorage.setItem('access_token', accessToken)
       localStorage.setItem('refresh_token', refreshToken)
+      if (username) localStorage.setItem('username', username)
+      if (email) localStorage.setItem('email', email)
       isAuthenticated.value = true
     }
   }
@@ -18,6 +20,8 @@ export const useAuth = () => {
     if (import.meta.client) {
       localStorage.removeItem('access_token')
       localStorage.removeItem('refresh_token')
+      localStorage.removeItem('username')
+      localStorage.removeItem('email')
       isAuthenticated.value = false
     }
   }

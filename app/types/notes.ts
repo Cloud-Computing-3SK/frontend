@@ -7,6 +7,7 @@ export interface NotesRequest {
 
 export interface NotesResponse {
   id: number
+  username: string
   title: string
   notes: string
   deadline: string
@@ -14,4 +15,10 @@ export interface NotesResponse {
   created_at: string
   updated_at: string
   user: number
+  organization: string
+}
+
+export interface ReadNotesResponse {
+  organization: string
+  notes: NotesResponse[]
 }
