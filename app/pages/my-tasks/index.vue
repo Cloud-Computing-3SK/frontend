@@ -78,7 +78,7 @@
     <div class="max-w-7xl mx-auto px-20 pt-8 mx-12">
       <div class="grid grid-cols-1 md:grid-cols-2 items-center ">
         <div>
-          <span class="text-[2.5rem] font-bold italic" style="font-family: 'Poppins', sans-serif; color: #000;">[Organization Name]'s Task</span>
+          <span class="text-[2.5rem] font-bold italic" style="font-family: 'Poppins', sans-serif; color: #000;">{{ organizationName }}'s Task</span>
         </div>
         <div class="flex items-center justify-end mt-4 md:mt-0 gap-2">
           <label class="text-[1rem] font-medium" style="font-family: 'Poppins', sans-serif;">Sort by date:</label>
@@ -113,27 +113,35 @@
                 style="min-width:260px;">
                 <div class="flex justify-between items-start mb-1">
                   <div>
-                    <div class="text-[1.4rem] font-bold leading-tight mb-1"
-                      style="font-family: 'Poppins', sans-serif; color:#000">{{ task.title }}</div>
+                    <div class="flex items-end gap-2 mb-1">
+                      <div class="text-[1.4rem] font-bold leading-tight"
+                        style="font-family: 'Poppins', sans-serif; color:#000">{{ task.title }}</div>
+                      <div class="text-[0.75rem] text-gray-400 flex items-center gap-1 pb-0.5" style="font-family: 'Poppins', sans-serif;">
+                       
+                        <span>by {{ task.username }}</span>
+                      </div>
+                    </div>
                     <div class="text-[1rem] text-[#222] mb-2" style="font-family: 'Poppins', sans-serif;">{{ task.notes
                       }}</div>
                   </div>
-                  <div class="relative">
-                    <button @click="toggleDropdown(task.id)" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                      <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                <div class="relative flex-shrink-0 flex items-center gap-2">
+                  
+                    <button @click="toggleDropdown(task.id)" class="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
+                      <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                         <path
                           d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                       </svg>
                     </button>
+                         
                     <div v-if="activeDropdown === task.id"
-                      class="absolute right-0  w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                      class="absolute right-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-200 z-50 top-8">
                       <button @click="openEditModal(task); activeDropdown = null"
-                        class="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left rounded-t-lg transition-colors"
+                        class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-left text-[0.9rem] rounded-t-lg transition-colors"
                         style="font-family: 'Poppins', sans-serif;">
                         Edit
                       </button>
                       <button @click="openDeleteModal(task.id); activeDropdown = null"
-                        class="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left text-red-600 rounded-b-lg transition-colors"
+                        class="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 text-left text-[0.9rem] text-red-600 rounded-b-lg transition-colors"
                         style="font-family: 'Poppins', sans-serif;">
                         Delete
                       </button>
@@ -216,7 +224,6 @@
 </template>
 
 <script setup lang="ts">
-
 definePageMeta({
   middleware: 'auth'
 })
@@ -225,11 +232,12 @@ import { useCreateNotes } from '~/data/notes/create'
 import { useUpdateNotes } from '~/data/notes/update'
 import { useDeleteNotes } from '~/data/notes/delete'
 import { useCreateNotes as useReadNotes } from '~/data/notes/read'
-import type { NotesRequest, NotesResponse } from '~/types/notes'
+import type { NotesRequest, NotesResponse, ReadNotesResponse } from '~/types/notes'
 
 interface Task {
   id: number
   title: string
+  username: string
   notes: string
   status: string
   deadline: string
@@ -238,25 +246,50 @@ interface Task {
 }
 
 const tasks = ref<Task[]>([])
+const organizationName = ref<string>('')
 
 const { createNotes } = useCreateNotes()
 const { updateNotes } = useUpdateNotes()
 const { deleteNotes } = useDeleteNotes()
 const { createNotes: readNotes } = useReadNotes()
+const toast = useToast()
 
 onMounted(async () => {
   try {
-    const res = await readNotes({} as any)
-    tasks.value = res.map((item: NotesResponse) => {
+    const res: ReadNotesResponse = await readNotes()
+    organizationName.value = res.organization
+    tasks.value = res.notes.map((item: NotesResponse) => {
       const dateDisplay = formatDateDisplay(item.deadline)
       return {
-        ...item,
+        id: item.id,
+        username: item.username,
+        title: item.title,
+        notes: item.notes,
+        status: item.status,
+        deadline: item.deadline,
         day: dateDisplay.day,
         month: dateDisplay.month
       }
     })
-  } catch (e) {
-    // handle error
+  } catch (e: any) {
+    // Redirect to organization if user is not part of any organization
+    if (e.message === "NO_ORGANIZATION") {
+      toast.add({
+        title: 'No Organization',
+        description: 'You need to join or create an organization first.',
+        color: 'warning',
+        icon: 'i-lucide-alert-circle'
+      })
+      navigateTo('/organization')
+    } else {
+      toast.add({
+        title: 'Error',
+        description: e.message || 'Failed to load tasks',
+        color: 'error',
+        icon: 'i-lucide-alert-circle'
+      })
+      console.error('Failed to load notes:', e)
+    }
   }
 })
 
@@ -306,25 +339,12 @@ const getStatusColor = (status: string) => {
   return colors[status] || 'gray'
 }
 
-const getTaskActions = (task: Task) => [
-  [{
-    label: 'Edit',
-    icon: 'i-lucide-pencil',
-    click: () => openEditModal(task)
-  }],
-  [{
-    label: 'Delete',
-    icon: 'i-lucide-trash-2',
-    click: () => openDeleteModal(task.id)
-  }]
-]
-
-const formatDateDisplay = (deadline: string) => {
+const formatDateDisplay = (deadline: string): { day: string; month: string } => {
   const date = new Date(deadline)
   const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
   return {
     day: date.getDate().toString(),
-    month: months[date.getMonth()]
+    month: months[date.getMonth()] || 'Unknown month'
   }
 }
 

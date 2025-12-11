@@ -27,9 +27,13 @@ useSeoMeta({
 // Use auth composable
 const { isAuthenticated, logout: authLogout, checkAuth } = useAuth()
 
+// Get username from localStorage
+const username = ref('')
+
 // Check auth on mount
 onMounted(() => {
   checkAuth()
+  username.value = localStorage.getItem('username') || ''
 })
 
 const logout = () => {
@@ -62,10 +66,22 @@ const logout = () => {
             </button>
           </NuxtLink>
           <template v-if="isAuthenticated">
-            <button @click="logout" class="px-6 py-2 text-[0.86rem] font-semibold rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors"
-              style="font-family: 'Poppins', sans-serif;">
-              Logout
-            </button>
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-xl">
+                <div class="w-7 h-7 rounded-full bg-gradient-to-br from-orange-400 to-yellow-400 flex items-center justify-center">
+                  <span class="text-white font-bold text-xs" style="font-family: 'Poppins', sans-serif;">
+                    {{ username.charAt(0).toUpperCase() }}
+                  </span>
+                </div>
+                <span class="text-[0.86rem] font-medium text-gray-700" style="font-family: 'Poppins', sans-serif;">
+                  {{ username }}
+                </span>
+              </div>
+              <button @click="logout" class="px-6 py-2 text-[0.86rem] font-semibold rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors"
+                style="font-family: 'Poppins', sans-serif;">
+                Logout
+              </button>
+            </div>
           </template>
           <template v-else>
             <NuxtLink to="/login">
