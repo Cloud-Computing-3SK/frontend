@@ -49,6 +49,12 @@ const logout = () => {
           </h1>
         </NuxtLink>
         <div class="flex items-center gap-6">
+          <NuxtLink to="/my-tasks">
+            <button class="px-6 py-2 text-[0.86rem] font-medium text-gray-700 hover:text-gray-900"
+              style="font-family: 'Poppins', sans-serif;">
+              Tasks
+            </button>
+          </NuxtLink>
           <NuxtLink to="/organization">
             <button class="px-6 py-2 text-[0.86rem] font-medium text-gray-700 hover:text-gray-900"
               style="font-family: 'Poppins', sans-serif;">

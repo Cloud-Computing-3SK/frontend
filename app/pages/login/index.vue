@@ -19,8 +19,9 @@ const onLogin = async () => {
   error.value = ''
   try {
     const response = await loginApi(form.value)
-
-    authLogin(response.access, response.refresh)
+    
+    // Save all user data
+    authLogin(response.access, response.refresh, response.username, response.email)
     
     toast.add({
       title: 'Login Successful',
